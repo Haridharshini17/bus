@@ -11,58 +11,60 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="role")
  */
 
-class Role 
+class Role
 {
     /**
-	 * @ORM\Id
-	 * @ORM\GeneratedValue
-	 * @ORM\Column(type="integer")
-	 */
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
     private $id;
     
-	/**
-     * @ORM\OneToMany(targetEntity="User", mappedBy="Role", cascade={"persist"})
- 	 */
-	private $user = null;
-	/**
-	 * @ORM\Column(type="text")
-	 */
-    private string $role;
-	/**
-    * @var \DateTime $createdAt
-    * @ORM\Column(name="created_at", type="datetime", length=100)
-    */
-    private $createdAt;
-	
     /**
-    * @var \DateTime $updatedAt
-    * @ORM\Column(name="updated_at", type="datetime", length=100)
-    */
+     * @ORM\OneToMany(targetEntity="User", mappedBy="Role", cascade={"persist"})
+     */
+    private $user = null;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    private string $role;
+
+    /**
+     * @var \DateTime $createdAt
+     * @ORM\Column(name="created_at", type="datetime", length=100)
+     */
+    private $createdAt;
+    
+    /**
+     * @var \DateTime $updatedAt
+     * @ORM\Column(name="updated_at", type="datetime", length=100)
+     */
     private $updatedAt;
 
-	public function getId(): ?int
-	{
-		return $this->id;
-	}
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-	public function setRole(string $role): self
-	{
-		$this->role = $role;
+    public function setRole(string $role): self
+    {
+        $this->role = $role;
 
-		return $this;
-	}
+        return $this;
+    }
 
     public function getRole(): ?string
     {
-		return $this->role;
-	}
+        return $this->role;
+    }
 
     public function __toString()
     {  
         return $this->getRole();
     }
 
-	/**
+    /**
      * @return \DateTime
      */
     public function getCreatedAt()
