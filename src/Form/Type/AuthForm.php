@@ -23,22 +23,24 @@ class AuthForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('id', IntegerType::class)
-        ->add('email', TextType::class)
-        ->add('password', TextType::class)
-        ->add('role', TextType::class)
-        ->getForm()
-        ->add('Save', SubmitType::class);
+            ->add('id', IntegerType::class)
+            ->add('email', TextType::class)
+            ->add('password', TextType::class)
+            ->add('role', TextType::class)
+            ->getForm()
+            ->add('Save', SubmitType::class);
 
         $builder->get('role')
-        ->addModelTransformer($this->roleTransformer);
+            ->addModelTransformer($this->roleTransformer);
     }
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults(
+            array(
             'data_class' => User::class,
             'allow_extra_fields' => true
-        ));
+            )
+        );
     }
     public function getDefaultOptions(array $options)
     {

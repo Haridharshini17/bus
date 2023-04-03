@@ -28,16 +28,18 @@ Class RoleTransformer implements DataTransformerInterface
 
     public function reverseTransform($role): ?Role
     {
-        if (!$role)  {
+        if (!$role) {
             return null;
         }
         $role = $this->entityManager
             ->getRepository(Role::class)
             ->findOneByRole($role);
-        if (null === $role)  {
-            throw new TransformationFailedException(sprintf(
-                'An role "%s" does not exist!',$role
-            ));
+        if (null === $role) {
+            throw new TransformationFailedException(
+                sprintf(
+                    'An role "%s" does not exist!', $role
+                )
+            );
         }
 
         return $role;
