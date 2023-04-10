@@ -10,3 +10,6 @@ api_authenticate:
     controller: App\Controller\AuthController::authenticate
 api_login_check:
     path: /api/login_check
+api_insert:
+    path: /api/insert
+    controller: App\Controller\BusController::insertBus
