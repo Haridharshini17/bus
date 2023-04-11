@@ -28,7 +28,7 @@ class BusController extends AbstractController
 		$createForm = $this->createForm(BusForm::class, $bus);
 		$createForm->handleRequest($request);
 		$createForm->submit(json_decode($request->getContent(), true));
-		if ($createForm->isSubmitted()) {
+		if ($createForm->isSubmitted() && $createForm->isValid()) {
 			$user = $createForm->getData();
 			$entityManager = $doctrine->getManager();
 			$entityManager->persist($user);

@@ -11,7 +11,6 @@ use App\Entity\Driver;
  * @ORM\Entity
  * @ORM\Table(name="bus")
  */
-
 class Bus
 {
     /**
@@ -21,13 +20,13 @@ class Bus
      */
     private $id;
     
-    /*
-	 * @ORM\Column(type="string")
+    /**
+	 * @ORM\column(type="string")
      */
     private $name;
 
 	/**
-	 * @ORM\Column(type="integer")
+	 * @ORM\column(type="integer")
 	 */
 	private $plate_no;
 
@@ -57,7 +56,8 @@ class Bus
 	private $available_seats;
 
 	/**
-     * @ORM\OneToOne(targetEntity="Driver", mappedBy="Bus", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="Driver", inversedBy="Bus")
+	 * @ORM\JoinColumn(name="driver_id",     referencedColumnName="id")
      */
 	private $driver_id;
 
@@ -67,16 +67,23 @@ class Bus
     private string $contact;
 
     /**
-     * @var \DateTime $createdAt
-     * @ORM\Column(name="created_at", type="datetime", length=100)
+     * @var datetime $created_at
+	 * 
+     * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private $created_at;
     
     /**
-     * @var \DateTime $updatedAt
-     * @ORM\Column(name="updated_at", type="datetime", length=100)
+     * @var datetime $updated_at
+	 * 
+     * @ORM\Column(type="datetime", nullable = true)
      */
-    private $updatedAt;
+    private $updated_at;
+
+    public function setId(int $id)
+    {
+        $this->id = $id;
+    }
 
     public function getId(): ?int
     {
@@ -131,7 +138,7 @@ class Bus
 		return $this->destination;
 	}
 
-	public function setTime(int $time): self
+	public function setTime($time)
 	{
 		$this->time = $time;
 
@@ -167,47 +174,50 @@ class Bus
 		return $this->available_seats;
 	}
 
-	public function setDriverId(int $driver_id): self
-	{
-		$this->driver_id = $driver_id;
-
-		return $this;
-	}
-
-	public function getDriverId(): ?int
+	public function getDriverId()
 	{
 		return $this->driver_id;
 	}
 
-    /**
-     * @return \DateTime
+	public function setDriverId(Driver $name): self
+	{
+		$this->driver_id = $name;
+
+		return $this;
+	}
+
+	/**
+     * @ORM\PrePersist
      */
-    public function getCreatedAt()
+    public function onPrePersist()
     {
-        return $this->createdAt;
+        $this->created_at = new \DateTime("now");
     }
 
     /**
-     * @param \DateTime $createdAt
+     * Gets triggered every time on update
+     *
+     * @ORM\PreUpdate
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function onPreUpdate()
     {
-        $this->createdAt = $createdAt;
+        $this->updated_at = new \DateTime("now");
     }
 
     /**
-     * @return \DateTime
+     * @see UserInterface
      */
-    public function getUpdatedAt()
+    public function getSalt(): ?string
     {
-        return $this->updatedAt;
+        // not needed when using the "bcrypt" algorithm in security.yaml
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @see UserInterface
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function eraseCredentials()
     {
-        $this->updatedAt = $updatedAtAt;
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 }

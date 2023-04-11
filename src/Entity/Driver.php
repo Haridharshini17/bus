@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ODM\MongoDB\Mapping\Annotations;
 use OpenApi\Annotations as OA;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Bus;
 
 /**
  * @ORM\Entity
@@ -21,7 +22,7 @@ class Driver
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="Bus", mappedBy="Driver", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="Bus", mappedBy="driver_id")
      */
     private $bus;
     
@@ -52,16 +53,21 @@ class Driver
         return $this->id;
     }
 
-    public function setDriver(string $name): self
+    public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getDriver(): ?string
+    public function getName(): ?string
     {
         return $this->name;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 
 	public function setContact(string $contact): self
