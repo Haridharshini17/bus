@@ -7,36 +7,32 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Doctrine\Persistence\ManagerRegistry;
-use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface as AuthEncoder;
 use App\Entity\Bus;
 use App\Entity\Driver;
 use App\Form\Type\BusForm;
-use App\Repository\UserRepository;
+use App\Service\AuthService;
 
-class BusController extends AbstractController
+class BusController extends BaseController
 {
-    public function __construct(ManagerRegistry $doctrine, EntityManagerInterface $entityManager)
+	public const INVALID_DETAILS = 'Provide Invalid details';
+	private $authService;
+
+	public function __construct(AuthService $authService)
     {
-        $this->db = $doctrine->getManager();
-        $this->repo = $this->db->getRepository(Bus::class);
+        $this->authService = $authService;
     }
 
-	public function insertBus(Request $request, ManagerRegistry $doctrine) 
+	public function insertBus(Request $request) 
 	{
 		$bus = new Bus;
 		$createForm = $this->createForm(BusForm::class, $bus);
-		$createForm->handleRequest($request);
-		$createForm->submit(json_decode($request->getContent(), true));
+	    $this->authService->submitForm($request, $createForm);
 		if ($createForm->isSubmitted() && $createForm->isValid()) {
-			$user = $createForm->getData();
-			$entityManager = $doctrine->getManager();
-			$entityManager->persist($user);
-			$entityManager->flush($user);
-
+			$busDetails = $createForm->getData();
+			$this->dbInsert($busDetails);
 			return new Response(Response::HTTP_CREATED);
 		}
-
+		return new Response(Response::INVALID_DETAILS);
 	}
    
 }

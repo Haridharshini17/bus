@@ -15,16 +15,7 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    public function checkEmail(string $email) 
-    {
-        return (boolean)$this->createQueryBuilder('u')
-            ->andWhere('u.email = :email')
-            ->setParameter('email', $email)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
-
-    public function authenticateUser(string $email, string $password) 
+    public function authenticate(string $email, string $password)
     {
         return (boolean)$this->createQueryBuilder('u')
             ->andWhere('u.email = :email')
