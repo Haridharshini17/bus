@@ -13,39 +13,30 @@ use App\Entity\User;
 use App\Entity\Role;
 use App\Form\Type\AuthForm;
 use App\Repository\UserRepository;
+use App\Service\AuthService;
 
-class AuthController extends AbstractController
+class AuthController extends BaseController
 {
-    public const INVALID_USER = 'User Already Exists';
+    public const USER_EXISTS = 'User Already Exists';
 
-    public function __construct(AuthEncoder $encoder, ManagerRegistry $doctrine, EntityManagerInterface $entityManager)
-    {
-        $this->authEncoder = $encoder;
-        $this->db = $doctrine->getManager();
-        $this->repo = $this->db->getRepository(User::class);
-    }
-
-    public function register(Request $request, ManagerRegistry $doctrine)
+    public function register(Request $request)
     {
         $user = new User;
         $createForm = $this->createForm(AuthForm::class, $user);
-        $createForm->handleRequest($request);
-        $createForm->submit(json_decode($request->getContent(), true));
+        $this->authService->submitForm($request, $createForm);
         if($createForm->isSubmitted() && $createForm->isValid()) {
             $user = $createForm->getData();
             $email = $user->getEmail();
-            $registeredEmail = $this->repo->checkEmail($email);
+            $password = $user->getPassword();
+            $registeredEmail = $this->db->getRepository(User::class)->authenticate($email, $password);
             if ($registeredEmail == true) {
-                return new Response(self::INVALID_USER, Response::HTTP_UNAUTHORIZED);  
+                return new Response(self::USER_EXISTS, Response::HTTP_UNAUTHORIZED);  
             }
-            $entityManager = $doctrine->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush($user);
+            $this->dbInsert($user);
 
             return new Response(Response::HTTP_CREATED);
         }
 
-        return false;
     }
 
     public function authenticate(Request $request)
@@ -53,15 +44,17 @@ class AuthController extends AbstractController
         $user = json_decode($request->getContent(), true);
         $email = $user['email'];
         $password = $user['password'];
-        $response = $this->repo->authenticateUser($email, $password);
-        if($response == true) {
+        $response = $this->db->getRepository(User::class)->authenticate($email, $password);
+        if ($response == true) {
             $authToken = $this->createToken($user);
+            return new Response($authToken);
         }
         else {
             return new Response(Response::HTTP_UNAUTHORIZED);
         }
 
     }
+
     public function createToken($user)
     {
 
