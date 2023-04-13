@@ -56,8 +56,8 @@ class Bus
 	private $available_seats;
 
 	/**
-     * @ORM\OneToOne(targetEntity="Driver", inversedBy="Bus")
-	 * @ORM\JoinColumn(name="driver_id",     referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="Driver", inversedBy="bus")
+	 * @ORM\JoinColumn(name="driver_id", referencedColumnName="id")
      */
 	private $driver_id;
 
