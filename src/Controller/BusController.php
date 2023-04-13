@@ -15,12 +15,6 @@ use App\Service\AuthService;
 class BusController extends BaseController
 {
 	public const INVALID_DETAILS = 'Provide Invalid details';
-	private $authService;
-
-	public function __construct(AuthService $authService)
-    {
-        $this->authService = $authService;
-    }
 
 	public function insertBus(Request $request) 
 	{

@@ -13,3 +13,9 @@ api_login_check:
 api_insert:
     path: /api/insert
     controller: App\Controller\BusController::insertBus
+api_search:
+    path: /api/bus/search
+    controller: App\Controller\PassengerController::searchBus
+api_book:
+    path: /api/bus/book
+    controller: App\Controller\PassengerController::bookBus
