@@ -29,10 +29,14 @@ class BusForm extends AbstractType
         	->add('plate_no', IntegerType::class)
 	    	->add('arrival', TextType::class)
 	    	->add('destination', TextType::class)
-	    	->add('time', TimeType::class, [
+			->add('arrival_time', TimeType::class, [
 				'widget' => 'single_text',
 				'minutes' => array("0"=>"0","15"=>"15","30"=>"30","45"=>"45"),
 			])
+			->add('destination_time', TimeType::class, [
+			    'widget' => 'single_text',
+			    'minutes' => array("0"=>"0","15"=>"15","30"=>"30","45"=>"45"),
+		    ])
 	    	->add('cost', IntegerType::class)
 	    	->add('available_seats', IntegerType::class)
 	    	->add('driver_id', TextType::class)

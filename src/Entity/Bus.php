@@ -43,7 +43,12 @@ class Bus
 	/**
 	 * @ORM\column(type="time")
 	 */
-	private $time;
+	private $arrival_time;
+
+	/**
+	 * @ORM\column(type="time")
+	 */
+	private $destination_time;
 
 	/**
 	 * @ORM\column(type="integer")
@@ -71,14 +76,14 @@ class Bus
 	 * 
      * @ORM\Column(type="datetime")
      */
-    private $created_at;
+    protected $created_at;
     
     /**
      * @var datetime $updated_at
 	 * 
      * @ORM\Column(type="datetime", nullable = true)
      */
-    private $updated_at;
+    protected $updated_at;
 
     public function setId(int $id)
     {
@@ -138,16 +143,28 @@ class Bus
 		return $this->destination;
 	}
 
-	public function setTime($time)
+	public function setArrivalTime($arrival_time)
 	{
-		$this->time = $time;
+		$this->arrival_time = $arrival_time;
 
 		return $this;
 	}
 
-	public function getTime(): ?string
+	public function getArrivalTime(): ?string
 	{
-		return $this->time;
+		return $this->arrival_time;
+	}
+
+	public function setDestinationTime($destination_time)
+	{
+		$this->destination_time = $destination_time;
+
+		return $this;
+	}
+
+	public function getDestinationTime(): ?string
+	{
+		return $this->destination_time;
 	}
 
 	public function setCost(int $cost): self
@@ -219,5 +236,20 @@ class Bus
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+	public function __toString()
+	{
+		return "id => {$this->id},
+		        name => {$this->name},
+				plate No => {$this->plate_no},
+				arrival => {$this->arrival},
+				destination => {$this->destination},
+				arrival_time => {$this->arrival_time->format('h:i:sa')},
+				destination_time => {$this->destination_time->format('h:i:sa')},
+				cost => {$this->cost},
+				available_seats => {$this->available_seats},
+				driver_id => {$this->driver_id}\n";
+
     }
 }

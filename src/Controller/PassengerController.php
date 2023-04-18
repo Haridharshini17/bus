@@ -25,7 +25,8 @@ class PassengerController extends BaseController
 								->findBy([
 									'arrival' => $arrival,
 									'destination' => $destination]);
-		    return new Response(json_encode($busList));
+			$busListArray = (array)$busList;
+			return new Response(implode($busListArray));
 		}
     }
 
