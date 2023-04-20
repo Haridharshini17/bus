@@ -5,36 +5,33 @@ namespace App\Entity;
 use Doctrine\ODM\MongoDB\Mapping\Annotations;
 use OpenApi\Annotations as OA;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Bus;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="driver")
+ * @ORM\Table(name="payment")
+ * @ORM\HasLifecycleCallbacks
  */
 
-class Driver
+class Payment
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @ORM\OneToOne(targetEntity="BookingDetails", mappedBy="Payment", cascade={"persist"})
+     * @ORM\JoinColumn(name="id", referencedColumnName="payment_id")
      */
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="Bus", mappedBy="driver_id")
+     * @ORM\Column(type="string")
      */
-    private $bus;
+    private $medium;
     
-    /**
-     * @ORM\Column(type="text")
-     */
-    private $name;
-
     /**
      * @ORM\Column(type="integer")
      */
-    private string $contact;
+    private $amount_paid;
 
     /**
      * @var \DateTime $created_at
@@ -53,33 +50,28 @@ class Driver
         return $this->id;
     }
 
-    public function setName(string $name): self
+    public function setMedium(string $medium): self
     {
-        $this->name = $name;
+        $this->medium = $medium;
 
         return $this;
     }
 
-    public function getName(): ?string
+    public function getMedium(): ?string
     {
-        return $this->name;
+        return $this->medium;
     }
 
-    public function __toString()
-    {
-        return $this->getName();
-    }
+	public function setAmountPaid(int $amount_paid): self
+	{
+		$this->amount_paid = $amount_paid;
 
-    public function setContact(string $contact): self
-    {
-        $this->contact = $contact;
+		return $this->amount_paid;
+	}
 
-        return $this->contact;
-    }
-
-    public function getContact() 
+    public function getAmountPaid() 
     {
-        return $this->contact;
+        return $this->amount_paid;
     }
 
     /**
@@ -87,15 +79,15 @@ class Driver
      */
     public function getCreatedAt()
     {
-        return $this->createdAt;
+        return $this->created_at;
     }
 
     /**
      * @param \DateTime $createdAt
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(\DateTime $created_at)
     {
-        $this->createdAt = $createdAt;
+        $this->created_at = $created_at;
     }
 
     /**
@@ -103,14 +95,14 @@ class Driver
      */
     public function getUpdatedAt()
     {
-        return $this->updatedAt;
+        return $this->updated_at;
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param \DateTime $updated_at
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt(\DateTime $updated_at)
     {
-        $this->updatedAt = $updatedAtAt;
+        $this->updated_at = $updated_at;
     }
 }

@@ -8,8 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Driver;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\BusRepository")
  * @ORM\Table(name="bus")
+ * @ORM\HasLifecycleCallbacks
  */
 class Bus
 {
@@ -17,6 +18,8 @@ class Bus
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @ORM\OneToMany(targetEntity="BookingDetails", mappedBy="Bus", cascade={"persist"})
+     * @ORM\JoinColumn(name="id",     referencedColumnName="bus_id")
      */
     private $id;
     
@@ -41,6 +44,7 @@ class Bus
 	private $destination;
 
 	/**
+	 *
 	 * @ORM\column(type="time")
 	 */
 	private $arrival_time;
@@ -58,7 +62,7 @@ class Bus
 	/**
 	 * @ORM\column(type="integer")
 	 */
-	private $available_seats;
+	private $total_seats;
 
 	/**
      * @ORM\OneToOne(targetEntity="Driver", inversedBy="bus")
@@ -146,11 +150,10 @@ class Bus
 	public function setArrivalTime($arrival_time)
 	{
 		$this->arrival_time = $arrival_time;
-
 		return $this;
 	}
 
-	public function getArrivalTime(): ?string
+	public function getArrivalTime()
 	{
 		return $this->arrival_time;
 	}
@@ -179,16 +182,16 @@ class Bus
 		return $this->cost;
 	}
 
-	public function setAvailableSeats(int $available_seats): self
+	public function setTotalSeats(int $total_seats): self
 	{
-		$this->available_seats = $available_seats;
+		$this->total_seats = $total_seats;
 
 		return $this;
 	}
 
-	public function getAvailableSeats(): ?int
+	public function getTotalSeats(): ?int
 	{
-		return $this->available_seats;
+		return $this->total_seats;
 	}
 
 	public function getDriverId()
@@ -236,20 +239,5 @@ class Bus
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
-    }
-
-	public function __toString()
-	{
-		return "id => {$this->id},
-		        name => {$this->name},
-				plate No => {$this->plate_no},
-				arrival => {$this->arrival},
-				destination => {$this->destination},
-				arrival_time => {$this->arrival_time->format('h:i:sa')},
-				destination_time => {$this->destination_time->format('h:i:sa')},
-				cost => {$this->cost},
-				available_seats => {$this->available_seats},
-				driver_id => {$this->driver_id}\n";
-
     }
 }

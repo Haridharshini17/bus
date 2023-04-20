@@ -13,7 +13,7 @@ use App\Service\AuthService;
 
 class BaseController extends AbstractController
 {
-	public function __construct(AuthEncoder $encoder, ManagerRegistry $doctrine, EntityManagerInterface $entityManager, AuthService $authService)
+    public function __construct(AuthEncoder $encoder, ManagerRegistry $doctrine, EntityManagerInterface $entityManager, AuthService $authService)
     {
         $this->authEncoder = $encoder;
         $this->db = $doctrine->getManager();
@@ -21,11 +21,10 @@ class BaseController extends AbstractController
         $this->authService = $authService;
     }
 
-	public function dbInsert($user) 
-	{
-		$entityManager = $this->doctrine->getManager();
-		$entityManager->persist($user);
-		$entityManager->flush($user);
-	}
-
+    public function dbInsert($user)
+    {
+        $entityManager = $this->doctrine->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush($user);
+    }
 }

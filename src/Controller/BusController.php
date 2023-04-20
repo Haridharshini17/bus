@@ -14,19 +14,19 @@ use App\Service\AuthService;
 
 class BusController extends BaseController
 {
-	public const INVALID_DETAILS = 'Provide Invalid details';
+    public const INVALID_DETAILS = 'Provide Invalid details';
 
-	public function insertBus(Request $request) 
-	{
-		$bus = new Bus;
-		$createForm = $this->createForm(BusForm::class, $bus);
-	    $this->authService->submitForm($request, $createForm);
-		if ($createForm->isSubmitted() && $createForm->isValid()) {
-			$busDetails = $createForm->getData();
-			$this->dbInsert($busDetails);
-			return new Response(Response::HTTP_CREATED);
-		}
-		return new Response(Response::INVALID_DETAILS);
-	}
+    public function insertBus(Request $request)
+    {
+        $bus = new Bus;
+        $createForm = $this->createForm(BusForm::class, $bus);
+        $this->authService->submitForm($request, $createForm);
+        if ($createForm->isSubmitted() && $createForm->isValid()) {
+            $busDetails = $createForm->getData();
+            $this->dbInsert($busDetails);
+            return new Response(Response::HTTP_CREATED);
+        }
+        return new Response(Response::INVALID_DETAILS);
+    }
    
 }

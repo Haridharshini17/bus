@@ -5,14 +5,14 @@ namespace App\Entity;
 use Doctrine\ODM\MongoDB\Mapping\Annotations;
 use OpenApi\Annotations as OA;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Bus;
 
 /**
- * @ORM\Entity
- * @ORM\Table(name="driver")
+ * @ORM\Entity(repositoryClass="App/Repository/PassengerRepository")
+ * @ORM\Table(name="passenger")
+ * @ORM\HasLifecycleCallbacks
  */
 
-class Driver
+class Passenger
 {
     /**
      * @ORM\Id
@@ -22,19 +22,19 @@ class Driver
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="Bus", mappedBy="driver_id")
-     */
-    private $bus;
-    
-    /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string")
      */
     private $name;
+    
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $age;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private string $contact;
+    private string $booking_details_id;
 
     /**
      * @var \DateTime $created_at
@@ -65,21 +65,28 @@ class Driver
         return $this->name;
     }
 
-    public function __toString()
+	public function setAge(int $age): self
+	{
+		$this->age = $age;
+
+		return $this->age;
+	}
+
+    public function getAge() 
     {
-        return $this->getName();
+        return $this->age;
     }
 
-    public function setContact(string $contact): self
-    {
-        $this->contact = $contact;
+	public function setBookingDetailsId(int $booking_details_id): self
+	{
+		$this->booking_details_id = $booking_details_id;
 
-        return $this->contact;
-    }
+		return $this->booking_details_id;
+	}
 
-    public function getContact() 
+    public function getBookingDetailsId() 
     {
-        return $this->contact;
+        return $this->booking_details_id;
     }
 
     /**
@@ -87,30 +94,30 @@ class Driver
      */
     public function getCreatedAt()
     {
-        return $this->createdAt;
+        return $this->created_at;
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param \DateTime $created_at
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(\DateTime $created_at)
     {
-        $this->createdAt = $createdAt;
+        $this->created_at = $created_at;
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime $updated_at
      */
     public function getUpdatedAt()
     {
-        return $this->updatedAt;
+        return $this->updated_at;
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param \DateTime $updated_at
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt(\DateTime $updated_at)
     {
-        $this->updatedAt = $updatedAtAt;
+        $this->updated_at = $updated_at;
     }
 }

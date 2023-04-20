@@ -24,7 +24,7 @@ class AuthController extends BaseController
         $user = new User;
         $createForm = $this->createForm(AuthForm::class, $user);
         $this->authService->submitForm($request, $createForm);
-        if($createForm->isSubmitted() && $createForm->isValid()) {
+        if ($createForm->isSubmitted() && $createForm->isValid()) {
             $user = $createForm->getData();
             $email = $user->getEmail();
             $password = $user->getPassword();
@@ -36,7 +36,6 @@ class AuthController extends BaseController
 
             return new Response(Response::HTTP_CREATED);
         }
-
     }
 
     public function authenticate(Request $request)
@@ -48,11 +47,9 @@ class AuthController extends BaseController
         if ($response == true) {
             $authToken = $this->createToken($user);
             return new Response($authToken);
-        }
-        else {
+        } else {
             return new Response(Response::HTTP_UNAUTHORIZED);
         }
-
     }
 
     public function createToken($user)
