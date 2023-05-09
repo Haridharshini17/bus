@@ -19,25 +19,28 @@ class AuthController extends BaseController
 {
     public const USER_EXISTS = 'User Already Exists';
 
+    /**
+     * Method to register user.
+     */
     public function register(Request $request)
     {
         $user = new User;
         $createForm = $this->createForm(AuthForm::class, $user);
-        $this->authService->submitForm($request, $createForm);
-        if ($createForm->isSubmitted() && $createForm->isValid()) {
-            $user = $createForm->getData();
-            $email = $user->getEmail();
-            $password = $user->getPassword();
-            $registeredEmail = $this->db->getRepository(User::class)->authenticate($email, $password);
-            if ($registeredEmail == true) {
-                return new Response(self::USER_EXISTS, Response::HTTP_UNAUTHORIZED);  
-            }
-            $this->dbInsert($user);
-
-            return new Response(Response::HTTP_CREATED);
+        $user = $this->authService->getFormDetails($request, $createForm);
+        $email = $user->getEmail();
+        $password = $user->getPassword();
+        $registeredEmail = $this->db->getRepository(User::class)->authenticate($email, $password);
+        if ($registeredEmail == true) {
+            return new Response(self::USER_EXISTS, Response::HTTP_UNAUTHORIZED);  
         }
+        $this->dbInsert($user);
+
+        return new Response(Response::HTTP_CREATED);
     }
 
+    /**
+     * Method to authenticate user.
+     */
     public function authenticate(Request $request)
     {
         $user = json_decode($request->getContent(), true);
@@ -52,6 +55,9 @@ class AuthController extends BaseController
         }
     }
 
+    /**
+     * Method to create token for valid user.
+     */
     public function createToken($user)
     {
 

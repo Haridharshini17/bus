@@ -7,7 +7,7 @@ use OpenApi\Annotations as OA;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App/Repository/PassengerRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\PassengerRepository")
  * @ORM\Table(name="passenger")
  * @ORM\HasLifecycleCallbacks
  */
@@ -32,21 +32,29 @@ class Passenger
     private $age;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private string $booking_details_id;
-
-    /**
-     * @var \DateTime $created_at
+     * @var                           \DateTime $created_at
      * @ORM\Column(name="created_at", type="datetime", length=100)
      */
     private $created_at;
     
     /**
-     * @var \DateTime $updated_at
+     * @var                           \DateTime $updated_at
      * @ORM\Column(name="updated_at", type="datetime", length=100)
      */
     private $updated_at;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="BookingDetails", inversedBy="Passenger")
+     * @ORM\JoinColumn(name="booking_details_id",    referencedColumnName="id")
+     */
+    private $booking_details_id;
+
+    private $bookingDetails;
+
+    public function setId(int $id)
+    {
+        $this->id = $id;
+    }
 
     public function getId(): ?int
     {
@@ -65,24 +73,23 @@ class Passenger
         return $this->name;
     }
 
-	public function setAge(int $age): self
-	{
-		$this->age = $age;
+    public function setAge(int $age): self
+    {
+        $this->age = $age;
 
-		return $this->age;
-	}
+        return $this;
+    }
 
     public function getAge() 
     {
         return $this->age;
     }
 
-	public function setBookingDetailsId(int $booking_details_id): self
-	{
-		$this->booking_details_id = $booking_details_id;
-
-		return $this->booking_details_id;
-	}
+    public function setBookingDetailsId(BookingDetails $booking_details_id): self
+    {
+        $this->booking_details_id = $booking_details_id;
+        return $this;
+    }
 
     public function getBookingDetailsId() 
     {
@@ -119,5 +126,17 @@ class Passenger
     public function setUpdatedAt(\DateTime $updated_at)
     {
         $this->updated_at = $updated_at;
+    }
+    
+    public function getBookingDetails()
+    {
+        return $this->bookingDetails;
+    }
+
+    public function setBookingDetails(BookingDetails $bookingDetails): self
+    {
+        $this->bookingDetails = $bookingDetails;
+
+        return $this;
     }
 }

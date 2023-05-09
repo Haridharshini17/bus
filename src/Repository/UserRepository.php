@@ -15,6 +15,9 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    /**
+     * Method to authenticate user.
+     */
     public function authenticate(string $email, string $password)
     {
         return (boolean)$this->createQueryBuilder('u')

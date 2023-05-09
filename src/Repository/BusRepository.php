@@ -11,13 +11,20 @@ use App\Entity\Bus;
 use App\Entity\BookingDetails;
 use App\Entity\Passenger;
 
+use App\Controller\BaseController;
+
 class BusRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, BaseController $baseController, ManagerRegistry $doctrine)
     {
         parent::__construct($registry, Bus::class);
+        $this->baseController = $baseController;
+        $this->db = $doctrine->getManager();
     }
 
+    /**
+     * Method to search bus based on arrival and destination.
+     */
     public function search(string $arrival, string $destination)
     {   
         return $this->createQueryBuilder('b')
@@ -31,6 +38,22 @@ class BusRepository extends ServiceEntityRepository
             ->groupBy('b.id')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Method to book bus from form details.
+     */
+    public function book($bookingInfo)
+    {
+        $insertBusInfo = $this->baseController->dbInsert($bookingInfo);
+        $passengerInfo = $bookingInfo->getPassengerArray();
+        array_walk(
+            $passengerInfo, function ($passenger, $value) use (&$bookingInfo) {
+                    $bookingId = $this->db->getRepository(BookingDetails::class)->find($bookingInfo->getId());
+                    $passenger->setBookingDetailsId($bookingId);
+                    $this->baseController->dbInsert($passenger);
+            }
+        );
     }
 }
 

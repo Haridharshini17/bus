@@ -19,56 +19,56 @@ class Bus
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @ORM\OneToMany(targetEntity="BookingDetails", mappedBy="Bus", cascade={"persist"})
-     * @ORM\JoinColumn(name="id",     referencedColumnName="bus_id")
+     * @ORM\JoinColumn(name="id",                    referencedColumnName="bus_id")
      */
     private $id;
     
     /**
-	 * @ORM\column(type="string")
+     * @ORM\column(type="string")
      */
     private $name;
 
-	/**
-	 * @ORM\column(type="integer")
-	 */
-	private $plate_no;
-
-	/**
-	 * @ORM\column(type="string")
-	 */
-	private $arrival;
-
-	/**
-	 * @ORM\column(type="string")
-	 */
-	private $destination;
-
-	/**
-	 *
-	 * @ORM\column(type="time")
-	 */
-	private $arrival_time;
-
-	/**
-	 * @ORM\column(type="time")
-	 */
-	private $destination_time;
-
-	/**
-	 * @ORM\column(type="integer")
-	 */
-	private $cost;
-
-	/**
-	 * @ORM\column(type="integer")
-	 */
-	private $total_seats;
-
-	/**
-     * @ORM\OneToOne(targetEntity="Driver", inversedBy="bus")
-	 * @ORM\JoinColumn(name="driver_id", referencedColumnName="id")
+    /**
+     * @ORM\column(type="integer")
      */
-	private $driver_id;
+    private $plate_no;
+
+    /**
+     * @ORM\column(type="string")
+     */
+    private $arrival;
+
+    /**
+     * @ORM\column(type="string")
+     */
+    private $destination;
+
+    /**
+     *
+     * @ORM\column(type="time")
+     */
+    private $arrival_time;
+
+    /**
+     * @ORM\column(type="time")
+     */
+    private $destination_time;
+
+    /**
+     * @ORM\column(type="integer")
+     */
+    private $cost;
+
+    /**
+     * @ORM\column(type="integer")
+     */
+    private $total_seats;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Driver", inversedBy="bus")
+     * @ORM\JoinColumn(name="driver_id",    referencedColumnName="id")
+     */
+    private $driver_id;
 
     /*
      * @ORM\Column(type="number")
@@ -77,14 +77,14 @@ class Bus
 
     /**
      * @var datetime $created_at
-	 * 
+     * 
      * @ORM\Column(type="datetime")
      */
     protected $created_at;
     
     /**
      * @var datetime $updated_at
-	 * 
+     * 
      * @ORM\Column(type="datetime", nullable = true)
      */
     protected $updated_at;
@@ -111,102 +111,102 @@ class Bus
         return $this->name;
     }
 
-	public function setPlateNo(int $plate_no): self
-	{
-		$this->plate_no = $plate_no;
+    public function setPlateNo(int $plate_no): self
+    {
+        $this->plate_no = $plate_no;
 
-		return $this;
-	}
+        return $this;
+    }
 
     public function getPlateNo(): ?int
     {
         return $this->plate_no;
     }
 
-	public function setArrival(string $arrival): self
-	{
-		$this->arrival = $arrival;
+    public function setArrival(string $arrival): self
+    {
+        $this->arrival = $arrival;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getArrival(): ?string
-	{
-		return $this->arrival;
-	}
+    public function getArrival(): ?string
+    {
+        return $this->arrival;
+    }
 
-	public function setDestination(string $destination): self
-	{
-		$this->destination = $destination;
+    public function setDestination(string $destination): self
+    {
+        $this->destination = $destination;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getDestination(): ?string 
-	{
-		return $this->destination;
-	}
+    public function getDestination(): ?string 
+    {
+        return $this->destination;
+    }
 
-	public function setArrivalTime($arrival_time)
-	{
-		$this->arrival_time = $arrival_time;
-		return $this;
-	}
+    public function setArrivalTime($arrival_time)
+    {
+        $this->arrival_time = $arrival_time;
+        return $this;
+    }
 
-	public function getArrivalTime()
-	{
-		return $this->arrival_time;
-	}
+    public function getArrivalTime()
+    {
+        return $this->arrival_time;
+    }
 
-	public function setDestinationTime($destination_time)
-	{
-		$this->destination_time = $destination_time;
+    public function setDestinationTime($destination_time)
+    {
+        $this->destination_time = $destination_time;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getDestinationTime(): ?string
-	{
-		return $this->destination_time;
-	}
+    public function getDestinationTime(): ?string
+    {
+        return $this->destination_time;
+    }
 
-	public function setCost(int $cost): self
-	{
-		$this->cost = $cost;
+    public function setCost(int $cost): self
+    {
+        $this->cost = $cost;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getCost(): ?int
-	{
-		return $this->cost;
-	}
+    public function getCost(): ?int
+    {
+        return $this->cost;
+    }
 
-	public function setTotalSeats(int $total_seats): self
-	{
-		$this->total_seats = $total_seats;
+    public function setTotalSeats(int $total_seats): self
+    {
+        $this->total_seats = $total_seats;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getTotalSeats(): ?int
-	{
-		return $this->total_seats;
-	}
+    public function getTotalSeats(): ?int
+    {
+        return $this->total_seats;
+    }
 
-	public function getDriverId()
-	{
-		return $this->driver_id;
-	}
+    public function getDriverId()
+    {
+        return $this->driver_id;
+    }
 
-	public function setDriverId(Driver $name): self
-	{
-		$this->driver_id = $name;
+    public function setDriverId(Driver $name): self
+    {
+        $this->driver_id = $name;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
+    /**
      * @ORM\PrePersist
      */
     public function onPrePersist()
