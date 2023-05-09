@@ -7,6 +7,7 @@ use Symfony\Component\Security\Core\User\LegacyPasswordAuthenticatedUserInterfac
 use OpenApi\Annotations as OA;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Role;
+use App\Entity\BookingDetails;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -16,10 +17,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User implements LegacyPasswordAuthenticatedUserInterface
 {
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @ORM\OneToMany(targetEntity="BookingDetails", mappedBy="User", cascade={"persist"})
+     * @ORM\JoinColumn(name="id",                    referencedColumnName="user_id")
      */
     private $id;
     /**
@@ -55,7 +59,7 @@ class User implements LegacyPasswordAuthenticatedUserInterface
         $this->id = $id;
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -90,6 +94,38 @@ class User implements LegacyPasswordAuthenticatedUserInterface
         $this->role_id = $role;
 
         return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @param \DateTime $created_at
+     */
+    public function setCreatedAt(\DateTime $created_at)
+    {
+        $this->created_at = $created_at;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * @param \DateTime $updated_at
+     */
+    public function setUpdatedAt(\DateTime $updated_at)
+    {
+        $this->updated_at = $updated_at;
     }
 
     /** 

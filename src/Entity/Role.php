@@ -31,16 +31,16 @@ class Role
     private string $role;
 
     /**
-     * @var \DateTime $createdAt
+     * @var \DateTime $created_at
      * @ORM\Column(name="created_at", type="datetime", length=100)
      */
-    private $createdAt;
+    private $created_at;
     
     /**
-     * @var \DateTime $updatedAt
+     * @var \DateTime $updated_at
      * @ORM\Column(name="updated_at", type="datetime", length=100)
      */
-    private $updatedAt;
+    private $updated_at;
 
     public function getId(): ?int
     {
@@ -69,15 +69,15 @@ class Role
      */
     public function getCreatedAt()
     {
-        return $this->createdAt;
+        return $this->created_at;
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param \DateTime $created_at
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(\DateTime $created_at)
     {
-        $this->createdAt = $createdAt;
+        $this->created_at = $created_at;
     }
 
     /**
@@ -85,14 +85,14 @@ class Role
      */
     public function getUpdatedAt()
     {
-        return $this->updatedAt;
+        return $this->updated_at;
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param \DateTime $updated_at
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt(\DateTime $updated_at)
     {
-        $this->updatedAt = $updatedAtAt;
+        $this->updated_at = $updated_at;
     }
 }
