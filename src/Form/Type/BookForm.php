@@ -14,6 +14,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\BookingDetails;
 use App\Entity\Passenger;
 use App\Form\Type\PassengerForm;
+use App\Form\Type\PaymentForm;
+use App\Entity\Payment;
 
 class BookForm extends AbstractType
 {
@@ -21,7 +23,6 @@ class BookForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('id', IntegerType::class)
             ->add(
                 'user_id', EntityType::class, array(
                      'class' => 'App\Entity\User',
@@ -38,8 +39,14 @@ class BookForm extends AbstractType
                 'passengers', CollectionType::class, [
                 'entry_type' => PassengerForm::class,
                 'entry_options' => ['label' => false],
-                'allow_add' => true
+                'allow_add' => true, 
+                'by_reference' => false,
+                'prototype'=> true
                 ]
+            )
+            ->add('payment_id', PaymentForm::class, array(
+                'required' => false
+                )
             )
             ->getForm()
             ->add('Save', SubmitType::class);
@@ -52,12 +59,6 @@ class BookForm extends AbstractType
             'data_class' => BookingDetails::class,
             'allow_extra_fields' => true
             )
-        );
-    }
-    public function getDefaultOptions(array $options)
-    {
-        return array(
-             'csrf_protection' => false
         );
     }
 }

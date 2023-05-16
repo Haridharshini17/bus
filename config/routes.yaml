@@ -19,3 +19,9 @@ api_search:
 api_book:
     path: /api/bus/book
     controller: App\Controller\BookingController::book
+api_payment:
+    path: /api/bus/pay/{id}
+    controller: App\Controller\BookingController::pay
+api_cancel:
+    path: /api/bus/cancel/{id}
+    controller: App\Controller\BookingController::cancel

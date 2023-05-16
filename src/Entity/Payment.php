@@ -5,7 +5,8 @@ namespace App\Entity;
 use Doctrine\ODM\MongoDB\Mapping\Annotations;
 use OpenApi\Annotations as OA;
 use Doctrine\ORM\Mapping as ORM;
-
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 /**
  * @ORM\Entity
  * @ORM\Table(name="payment")
@@ -18,8 +19,6 @@ class Payment
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @ORM\OneToOne(targetEntity="BookingDetails", mappedBy="Payment", cascade={"persist"})
-     * @ORM\JoinColumn(name="id", referencedColumnName="payment_id")
      */
     private $id;
 
@@ -45,6 +44,17 @@ class Payment
      */
     private $updated_at;
 
+    /**
+     * @ORM\OneToOne(targetEntity= "BookingDetails", inversedBy="Payment", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="id", referencedColumnName= "payment_id")
+     */
+    private BookingDetails $bookingDetails;
+
+    public function setId(int $id)
+    {
+        $this->id = $id;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -66,7 +76,7 @@ class Payment
 	{
 		$this->amount_paid = $amount_paid;
 
-		return $this->amount_paid;
+		return $this;
 	}
 
     public function getAmountPaid() 
@@ -104,5 +114,23 @@ class Payment
     public function setUpdatedAt(\DateTime $updated_at)
     {
         $this->updated_at = $updated_at;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function onPrePersist()
+    {
+        $this->created_at = new \DateTime("now");
+    }
+
+    /**
+     * Gets triggered every time on update
+     *
+     * @ORM\PreUpdate
+     */
+    public function onPreUpdate()
+    {
+        $this->updated_at = new \DateTime("now");
     }
 }

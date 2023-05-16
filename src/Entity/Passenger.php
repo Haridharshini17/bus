@@ -32,23 +32,21 @@ class Passenger
     private $age;
 
     /**
-     * @var                           \DateTime $created_at
+     * @var \DateTime $created_at
      * @ORM\Column(name="created_at", type="datetime", length=100)
      */
     private $created_at;
     
     /**
-     * @var                           \DateTime $updated_at
+     * @var  \DateTime $updated_at
      * @ORM\Column(name="updated_at", type="datetime", length=100)
      */
     private $updated_at;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BookingDetails", inversedBy="Passenger")
+     * @ORM\ManyToOne(targetEntity="BookingDetails", inversedBy="passengers")
      * @ORM\JoinColumn(name="booking_details_id",    referencedColumnName="id")
      */
-    private $booking_details_id;
-
     private $bookingDetails;
 
     public function setId(int $id)
@@ -85,15 +83,28 @@ class Passenger
         return $this->age;
     }
 
-    public function setBookingDetailsId(BookingDetails $booking_details_id): self
+    public function getBookingDetails(): ?BookingDetails
     {
-        $this->booking_details_id = $booking_details_id;
-        return $this;
+        return $this->bookingDetails;
     }
 
-    public function getBookingDetailsId() 
+    public function setBookingDetails(?BookingDetails $bookingDetails)
+    {
+        $this->bookingDetails = $bookingDetails;
+
+        return $this;
+    }
+    
+    public function getBookingDetailsId()
     {
         return $this->booking_details_id;
+    }
+
+    public function setBookingDetailsId(BookingDetails $booking_details_id)
+    {
+        $this->booking_details_id = $booking_details_id;
+
+        return $this;
     }
 
     /**
@@ -127,16 +138,22 @@ class Passenger
     {
         $this->updated_at = $updated_at;
     }
-    
-    public function getBookingDetails()
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function onPrePersist()
     {
-        return $this->bookingDetails;
+        $this->created_at = new \DateTime("now");
     }
 
-    public function setBookingDetails(BookingDetails $bookingDetails): self
+    /**
+     * Gets triggered every time on update
+     *
+     * @ORM\PreUpdate
+     */
+    public function onPreUpdate()
     {
-        $this->bookingDetails = $bookingDetails;
-
-        return $this;
+        $this->updated_at = new \DateTime("now");
     }
 }

@@ -2,9 +2,17 @@
 
 namespace App\Service;
 
+use App\Entity\BookingDetails;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
+
 class BusService
 {
-
+    public function __construct(ManagerRegistry $doctrine, EntityManagerInterface $entityManager) 
+    {
+        $this->db = $doctrine->getManager();
+        $this->doctrine = $doctrine;
+    } 
     /**
      * Method to format the arrival and destination time.
      */
@@ -17,7 +25,7 @@ class BusService
             }
         );
 
-        return json_encode($response);
+        return json_encode($response); //check
     }
 
     /**
@@ -33,5 +41,18 @@ class BusService
         }
 
         return new Response(Response::INVALID_DETAILS);
+    }
+
+    /**
+     * Method to insert payment Id in Booking details table.
+     */
+
+    public function insertPaymentId($payBus, $bookingDetailsId)
+    {
+        $entityManager = $this->doctrine->getManager();
+        $bookingObj = $this->db->getRepository(BookingDetails::class)->find($bookingDetailsId);
+        $bookingObj->setPaymentId($payBus);
+        $entityManager->persist($bookingObj); //common
+        $entityManager->flush($bookingObj); //comon
     }
 }
