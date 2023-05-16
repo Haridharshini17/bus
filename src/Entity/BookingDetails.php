@@ -21,23 +21,21 @@ class BookingDetails
 {
     /**
      * @ORM\Id
+     * @ORM\Column(nullable=true)
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * 
-     * @ORM\OneToMany(targetEntity="Passenger", mappedBy="BookingDetails")
-     * @ORM\JoinColumn(name="id",               referencedColumnName="booking_details_id")
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="BookingDetails")
-     * @ORM\JoinColumn(name="user_id",     referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user_id;
     
     /**
      * @ORM\ManyToOne(targetEntity="Bus", inversedBy="BookingDetails", cascade={"persist"})
-     * @ORM\JoinColumn(name="bus_id",     referencedColumnName="id")
+     * @ORM\JoinColumn(name="bus_id", referencedColumnName="id")
      */
     private $bus_id;
 
@@ -47,12 +45,6 @@ class BookingDetails
      * @ORM\Column(type="datetime")
      */
     private $booked_date;
-
-    /**
-     * @ORM\OneToOne(targetEntity="Payment", inversedBy="BookingDetails", cascade={"persist"})
-     * @ORM\JoinColumn(name="payment_id",    referencedColumnName="id")
-     */
-    private $payment_id;
 
     /**
      * @var datetime $created_at
@@ -68,7 +60,16 @@ class BookingDetails
      */
     private $updated_at;
 
+    /** 
+     * @ORM\OneToMany(targetEntity="Passenger", mappedBy="BookingDetails", cascade={"persist"})
+     */
     private $passengers;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Payment", mappedBy= "BookingDetails", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="payment_id", referencedColumnName= "id")
+     */
+    private $payment_id;
 
     public function __construct()
     {
@@ -111,6 +112,18 @@ class BookingDetails
         return $this;
     }
 
+    public function getPaymentId()
+    {
+        return $this->payment_id;
+    }
+
+    public function setPaymentId(Payment $payment_id)
+    {
+        $this->payment_id = $payment_id;
+ 
+        return $this;
+    }
+
     /**
      * @param \DateTime $booked_date
      */
@@ -126,18 +139,6 @@ class BookingDetails
     public function getBookedDate() 
     {
         return $this->booked_date;
-    }
-
-    public function setPaymentId(int $payment_id): self
-    {
-        $this->payment_id= $payment_id;
-
-        return $this;
-    }
-
-    public function getPaymentId() 
-    {
-        return $this->payment_id;
     }
 
     /**
@@ -199,9 +200,10 @@ class BookingDetails
     public function addPassenger(Passenger $passenger): self
     {
         if (!$this->passengers->contains($passenger)) {
-            $this->passengers[] = $passenger->getId();
+            $this->passengers[] = $passenger;
             $passenger->setBookingDetails($this);
         }
+
         return $this;
     }
 
@@ -213,11 +215,7 @@ class BookingDetails
                 $passenger->setBookingDetails(null);
             }
         }
-        return $this;
-    }
 
-    public function getPassengerArray()
-    {
-       return $this->getPassengers()->toArray();
+        return $this;
     }
 }
