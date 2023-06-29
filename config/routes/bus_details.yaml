@@ -1,0 +1,14 @@
+api_insert:
+    path: /api/insert
+    controller: App\Controller\BusController::insert
+api_display:
+    path: /api/display
+    controller: App\Controller\BusController::display
+api_update:
+    path: /api/update/{id}
+    controller: App\Controller\BusController::update
+    methods: [PATCH]
+api_delete:
+    path: /api/delete/{id}
+    controller: App\Controller\BusController::delete
+    methods: [DELETE]
