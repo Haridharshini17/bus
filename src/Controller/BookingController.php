@@ -6,32 +6,42 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Form\Type\BusForm;
+use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Bus;
-use App\Service\BusService;
-use App\Repository\BusRepository;
 use App\Entity\BookingDetails;
 use App\Entity\Passenger;
-use App\Form\Type\BookForm;
 use App\Entity\Payment;
+use App\Form\Type\BusForm;
+use App\Service\BusService;
+use App\Repository\BusRepository;
+use App\Repository\BaseRepository;
+use App\Form\Type\BookForm;
 use App\Form\Type\PaymentForm;
 
 class BookingController extends BaseController
 {
+    public const BOOK_BUS = 'Bus ticket booked successfully';
+    public const PAYMENT_DONE = 'Payment done successfully';
+    public const CANCEL = 'Bus ticket cancelled successfully';
+
+    public function __construct(BusService $busService) 
+    {
+        $this->busService = $busService;
+        $this->repo = $this->busService->db->getRepository(Bus::class);
+    }
     /**
      * Method to search bus.
      */
     public function search(Request $request)
     {
         $bus = new Bus;
-        $createForm = $this->createForm(BusForm::class, $bus);
-        $busDetails = $this->busService->getFormDetails($request, $createForm);
+        $busDetails = $this->getBusFormDetails(BusForm::class, $bus, $request);
         $arrival = $busDetails->getArrival();
         $destination = $busDetails->getDestination();
-        $busList = $this->db->getRepository(Bus::class)->search($arrival, $destination);
+        $busList = $this->repo->search($arrival, $destination);
         $formatResponse = $this->busService->dateFormat($busList);
 
-        return new Response($formatResponse);
+        return new JsonResponse($formatResponse);
     
     }
 
@@ -44,11 +54,10 @@ class BookingController extends BaseController
         $passenger = new Passenger;
         $payment = new payment;
         $bookingDetails->addPassenger($passenger);
-        $createForm = $this->createForm(BookForm::class, $bookingDetails);
-        $bookingInfo = $this->busService->getFormDetails($request, $createForm);
-        $bookBus = $this->db->getRepository(Bus::class)->book($bookingInfo);
+        $bookingInfo = $this->getBusFormDetails(BookForm::class, $bookingDetails, $request);
+        $bookBus = $this->repo->book($bookingInfo);
 
-        return new Response(Response::HTTP_CREATED);  
+        return $this->renderResponse(self::BOOK_BUS);  
     }
 
     /**
@@ -59,13 +68,12 @@ class BookingController extends BaseController
         $bookingDetailsId = $request->get('id');
         $bookingDetails = new BookingDetails;
         $payment = new Payment;
-        $createForm = $this->createForm(PaymentForm::class, $payment);
-        $paymentInfo = $this->busService->getFormDetails($request, $createForm);
-        $payBus = $this->db->getRepository(Bus::class)->pay($paymentInfo, $bookingDetailsId);
-        $this->dbInsert($payBus);
-        $this->busService->insertPaymentId($payBus, $bookingDetailsId);
+        $paymentInfo = $this->getBusFormDetails(PaymentForm::class, $payment, $request);
+        $payBus = $this->repo->pay($paymentInfo, $bookingDetailsId);
+        $this->busService->pay($payBus);
+        $this->busService->updatePaymentId($payBus, $bookingDetailsId);
 
-        return new Response(Response::HTTP_CREATED);
+        return $this->renderResponse(self::PAYMENT_DONE);
     }
 
     /**
@@ -74,8 +82,8 @@ class BookingController extends BaseController
     public function cancel(Request $request)
     {
         $bookingId = $request->get('id');
-        $bookBus = $this->db->getRepository(Bus::class)->cancel($bookingId);
+        $bookBus = $this->repo->cancel($bookingId);
 
-        return new Response(Response::HTTP_OK);
+        return $this->renderResponse(self::CANCEL);
     }
 }
