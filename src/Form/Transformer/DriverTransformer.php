@@ -2,9 +2,9 @@
 
 namespace App\Form\Transformer;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Driver;
 
 Class DriverTransformer implements DataTransformerInterface
