@@ -17,25 +17,33 @@ use App\Service\AuthService;
 
 class AuthController extends BaseController
 {
+    public const REGISTER_USER = 'User Registered Successfully';
     public const USER_EXISTS = 'User Already Exists';
-
+    public const INVALID_USER = 'Invalid User';
     /**
      * Method to register user.
      */
+    public function __construct(AuthService $authService, AuthEncoder $encoder)
+    {
+        $this->authEncoder = $encoder;
+        $this->authService = $authService;
+        $this->repo = $this->authService->db->getRepository(User::class);
+    }
+
     public function register(Request $request)
     {
         $user = new User;
-        $createForm = $this->createForm(AuthForm::class, $user);
-        $user = $this->authService->getFormDetails($request, $createForm);
-        $email = $user->getEmail();
-        $password = $user->getPassword();
-        $registeredEmail = $this->db->getRepository(User::class)->authenticate($email, $password);
-        if ($registeredEmail == true) {
-            return new Response(self::USER_EXISTS, Response::HTTP_UNAUTHORIZED);  
+        $this->getAuthFormDetails(AuthForm::class, $user, $request);
+        $registeredEmail = $this->repo->authenticate($user->getEmail(), $user->getPassword());
+        if ($registeredEmail) {
+            return $this->reportError(
+                self::USER_EXISTS,
+                Response::HTTP_UNAUTHORIZED
+            );
         }
-        $this->dbInsert($user);
+        $this->authService->register($user);
 
-        return new Response(Response::HTTP_CREATED);
+        return $this->renderResponse(self::REGISTER_USER);
     }
 
     /**
@@ -44,14 +52,15 @@ class AuthController extends BaseController
     public function authenticate(Request $request)
     {
         $user = json_decode($request->getContent(), true);
-        $email = $user['email'];
-        $password = $user['password'];
-        $response = $this->db->getRepository(User::class)->authenticate($email, $password);
-        if ($response == true) {
+        $response = $this->repo->authenticate($user['email'], $user['password']);
+        if ($response) {
             $authToken = $this->createToken($user);
-            return new Response($authToken);
+            return $this->renderResponse($authToken);
         } else {
-            return new Response(Response::HTTP_UNAUTHORIZED);
+            return $this->reportError(
+                self::INVALID_USER,
+                Response::HTTP_UNAUTHORIZED
+            );
         }
     }
 
@@ -60,11 +69,10 @@ class AuthController extends BaseController
      */
     public function createToken($user)
     {
-
         return $this->authEncoder->encode(
             [
-            'user_email' => $user['email'],
-            'user_role' => $user['role']
+            'userEmail' => $user['email'],
+            'userRole' => $user['role']
             ]
         );
     }
