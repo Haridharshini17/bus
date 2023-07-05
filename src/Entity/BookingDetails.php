@@ -5,12 +5,12 @@ namespace App\Entity;
 use Doctrine\ODM\MongoDB\Mapping\Annotations;
 use OpenApi\Annotations as OA;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use App\Entity\Bus;
 use App\Entity\Passenger;
 use App\Entity\Payment;
 use App\Entity\User;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity
